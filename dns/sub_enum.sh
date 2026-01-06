@@ -29,21 +29,21 @@ function output {
     timestamp=$(date +"%Y-%m-%d %H:%M:%S")
     echo '[+] '"$timestamp $message"
 }
-                                                                                                                                                                                                             
-# Check args                                                                                                                                                                                                 
-domains_file="$1"                                                                                                                                                                                            
-if [[ ! -r "$domains_file" ]]; then                                                                                                                                                                          
-    print_help_and_exit                                                                                                                                                                                      
-fi                                                                                                                                                                                                           
-                                                                                                                                                                                                             
-wordlist="$2"                                                                                                                                                                                                
-# if wordlist specified                                                                                                                                                                                      
-if [[ -n "$wordlist" ]]; then                                                                                                                                                                                
-    # but wordlist not readable                                                                                                                                                                              
-    if [[ ! -r "$wordlist" ]]; then                                                                                                                                                                          
-        print_help_and_exit                                                                                                                                                                                  
-    fi                                                                                                                                                                                                       
-# no wordlist specified                                                                                                                                                                                      
+
+# Check args
+domains_file="$1"
+if [[ ! -r "$domains_file" ]]; then
+    print_help_and_exit
+fi
+
+wordlist="$2"
+# if wordlist specified
+if [[ -n "$wordlist" ]]; then
+    # but wordlist not readable
+    if [[ ! -r "$wordlist" ]]; then
+        print_help_and_exit
+    fi
+# no wordlist specified
 else
     # use the default wordlist
     output 'Using default wordlist'
@@ -102,13 +102,13 @@ sort -u "$domains_file" | while read domain; do
     amass_file="${temp_dir}/${domain}${amass_file_addon}"
     amass enum -silent -passive -timeout 2 -d "$domain" -o "$amass_file"
     grep -Po "[^\s]+$domain" "$amass_file" >> "$potential_subs_file"
-    
+
     # cycle through wordlist, append potential subs to file
     output '  - Adding subs from wordlist'
     for sub in $(head -"$bruteforce_count" "$wordlist"); do
         echo "${sub}.${domain}" >> "$potential_subs_file"
     done
-    
+
     ### Clean up potential subs file
     output '  - Cleaning up potential subs file'
     # add root domain to file as well for further resolution tools
