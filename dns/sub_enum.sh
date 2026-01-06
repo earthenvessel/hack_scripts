@@ -3,14 +3,12 @@
 # sub_enum.sh
 #
 # Given a domain, create a list of potential subdomains.
-# Uses crt.sh, waybackurls, OWASP amass, and wordlist bruteforce.
 #
 
 # Define constants
 potential_subs_addon='_potential_subs.txt'
-crt_sh_file_addon='_crt_sh.html'
+subfinder_file_addon='_subfinder.txt'
 wayback_file_addon='_waybackurls.txt'
-amass_file_addon='_amass.txt'
 wordlist_directory="${HOME}/.evscripts"
 default_wordlist_file="$wordlist_directory/best-dns-wordlist.txt"
 default_wordlist_url='https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt'
@@ -63,7 +61,7 @@ fi
 mkdir "$temp_dir" 2>/dev/null
 
 # check for required tools in PATH
-for tool in amass waybackurls; do
+for tool in subfinder waybackurls; do
     if [[ -z $(which "$tool") ]]; then
         echo "[!] $tool not found in PATH" >&2
         exit 2
@@ -85,23 +83,17 @@ sort -u "$domains_file" | while read domain; do
         fi
     fi
 
-    # crt.sh
-    output '  - crt.sh'
-    crt_file="${temp_dir}/${domain}${crt_sh_file_addon}"
-    curl -s "https://crt.sh/?q=$domain" -o "${crt_file}"
-    grep '<TD>' "$crt_file" | grep -Po "[^>]+$domain" | sort -u >> "$potential_subs_file"
+    # subfinder
+    output '  - subfinder'
+    subfinder_file="${temp_dir}/${domain}${subfinder_file_addon}"
+    subfinder -disable-update-check -domain "$domain" -all -output "$subfinder_file" -silent >/dev/null
+    sort -u "$subfinder_file" >> "$potential_subs_file"
 
     # waybackurls
     output '  - waybackurls'
     wayback_file="${temp_dir}/${domain}${wayback_file_addon}"
     echo "$domain" | waybackurls > "$wayback_file"
     grep -Po "^.+?$domain" "$wayback_file" | sed -r 's/^http.?:\/\///' | sort -u >> "$potential_subs_file"
-
-    # run amass
-    output '  - amass'
-    amass_file="${temp_dir}/${domain}${amass_file_addon}"
-    amass enum -silent -passive -timeout 2 -d "$domain" -o "$amass_file"
-    grep -Po "[^\s]+$domain" "$amass_file" >> "$potential_subs_file"
 
     # cycle through wordlist, append potential subs to file
     output '  - Adding subs from wordlist'
