@@ -34,38 +34,46 @@ async def main():
         print(f"[*] Enumerating MCP Server: {args.server_url}\n")
 
         # --- Resources ---
-        print("Resources:")
+        print("-" * 75)
+        print("| Resources |")
+        print("-------------")
         for resource in resources:
-            print('***')
-            print(resource.name)
-            print(resource.description.strip() if resource.description else "No description")
+            print(f"Name: {resource.name}")
+            print(f"URI:  {resource.uri}")
+            print(f"Description: {resource.description.strip()}" if resource.description else "No description")
             print("-" * 50)
 
         # --- Resource Templates ---
-        print("\nResource Templates:")
+        print()
+        print("-" * 75)
+        print("| Resource Templates |")
+        print("----------------------")
         for resource_template in resource_templates:
-            print('***')
-            print(resource_template.uriTemplate)
-            print(resource_template.description.strip() if resource_template.description else "No description")
+            print(f"URI Template: {resource_template.uriTemplate}")
+            print(f"Description: {resource_template.description.strip()}" if resource_template.description else "No description")
             print("-" * 50)
 
         # --- Tools ---
-        print("\nTools:")
+        print()
+        print("-" * 75)
+        print("| Tools |")
+        print("---------")
         for tool in tools:
-            print('***')
             params = list(tool.inputSchema.get('properties', {}).keys())
             print(f"{tool.name}({', '.join(params)})")
-            print(tool.description.strip() if tool.description else "No description")
+            print(f"Description: {tool.description.strip()}" if tool.description else "No description")
             print("-" * 50)
 
         # --- Prompts ---
-        print("\nPrompts:")
+        print()
+        print("-" * 75)
+        print("| Prompts |")
+        print("-----------")
         for prompt in prompts:
-            print('***')
             # Extract arguments if the prompt template requires them
             prompt_args = [arg.name for arg in prompt.arguments] if prompt.arguments else []
             print(f"{prompt.name} (Arguments: {', '.join(prompt_args) if prompt_args else 'None'})")
-            print(prompt.description.strip() if prompt.description else "No description")
+            print(f"Description: {prompt.description.strip()}" if prompt.description else "No description")
             print("-" * 50)
 
 if __name__ == "__main__":
