@@ -496,10 +496,8 @@ def candidate_web_urls(finding: PortFinding, prefer_hostname: bool = False) -> l
 
     if port == 80:
         urls.append(f"http://{host}")
-        urls.append(f"https://{host}:80")
     elif port == 443:
         urls.append(f"https://{host}")
-        urls.append(f"http://{host}:443")
     else:
         urls.append(f"http://{host}:{port}")
         urls.append(f"https://{host}:{port}")
