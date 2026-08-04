@@ -17,21 +17,21 @@ if [[ ! -z $(pgrep --full BurpSuite) ]]; then
     else
         echo 'Exiting. Please kill Burp manually and re-run.'
         exit 1
-    fi                                                                                                                                                     
-else                                                                                                                                                       
-    echo 'BurpSuite does not appear to be running.'                                                                                                        
-fi                                                                                                                                                                                                            
-                                                                                                                                                                                                              
-# find and confirm install file                                                                                                                                                                               
-install_file=$(ls -t ~/Downloads/burpsuite_pro_linux_v202*_*.sh | head -1)                                                                                                                                    
-if [[ ! -z "$install_file" ]]; then                                                                                                                                                                           
-    echo "Install file found: $install_file"                                                                                                                                                                  
-    echo -n 'Use this one? [Y/n] '                                                                                                                                                                            
-    read answer                                                                                                                                                                                               
-    if [[ "${answer,,}" == 'n' ]]; then                                                                                                                                                                       
-        echo 'Please download the correct file, remove others, and re-run.'                                                                                                                                   
-        exit 2                                                                                                                                                                                                
-    else                                                                                                                                                                                                      
+    fi
+else
+    echo 'BurpSuite does not appear to be running.'
+fi
+
+# find and confirm install file
+install_file=$(ls -t ~/Downloads/burpsuite*_linux_v20*_*.sh | head -1)
+if [[ ! -z "$install_file" ]]; then
+    echo "Install file found: $install_file"
+    echo -n 'Use this one? [Y/n] '
+    read answer
+    if [[ "${answer,,}" == 'n' ]]; then
+        echo 'Please download the correct file, remove others, and re-run.'
+        exit 2
+    else
         echo 'Launching installer.'
     fi
 else
